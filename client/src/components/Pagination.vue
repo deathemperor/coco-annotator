@@ -65,6 +65,11 @@ export default {
 
       clearTimeout(this.timer);
       this.timer = setTimeout(() => this.$emit("pagechange", this.page), 0);
+    },
+    pages: function(newPages) {
+      if (this.range > newPages) {
+        this.range = newPages;
+      }
     }
   },
   computed: {

@@ -79,7 +79,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form @submit.prevent="createDataset">
+            <form @submit.prevent="createDataset" @keydown.enter="createDataset">
               <div
                 class="form-group"
                 :class="{ 'was-validated': validDatasetName.length !== 0 }"
