@@ -4,13 +4,13 @@
       v-show="previousimage != null"
       class="fa fa-arrow-left image-arrows"
       style="float:left"
-      @click="route(previousimage)"
+      @click="route(previousimage, folders)"
     />
     <i
       v-show="nextimage != null"
       class="fa fa-arrow-right image-arrows"
       style="float:right"
-      @click="route(nextimage)"
+      @click="route(nextimage, folders)"
     />
 
     <h6 class="text-center" style="color: white;">
@@ -36,6 +36,10 @@ export default {
     nextimage: {
       type: Number,
       default: null
+    },
+    folders: {
+      type: Array,
+      default: null
     }
   },
   methods: {
@@ -44,13 +48,19 @@ export default {
      *
      * @param {Number} identifer id of a file
      */
-    route(identifier) {
+    route(identifier, folders) {
       // Make sure we pop the latest session before annotations
       this.$parent.current.annotation = -1;
 
       this.$nextTick(() => {
         this.$parent.save(() => {
-          this.$router.push({ name: "annotate", params: { identifier } });
+          this.$router.push({
+            name: "annotate",
+            params: {
+              identifier,
+              folders
+            }
+          });
         });
       });
     }

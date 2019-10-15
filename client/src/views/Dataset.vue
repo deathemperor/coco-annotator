@@ -55,7 +55,7 @@
           <div v-else>
             <Pagination :pages="pages" @pagechange="updatePage" />
             <div class="row">
-              <ImageCard v-for="image in images" :key="image.id" :image="image" />
+              <ImageCard v-for="image in images" :key="image.id" :image="image" :folders="folders" />
             </div>
             <Pagination :pages="pages" @pagechange="updatePage" />
           </div>
@@ -65,7 +65,7 @@
           <div class="card my-3 p-3 shadow-sm mr-2">
             <h6 class="border-bottom border-gray pb-2"><b>Exports</b></h6>
             
-            <div class="media text-muted pt-3" v-for="exp in datasetExports">
+            <div class="media text-muted pt-3" v-for="exp in datasetExports" :key="exp.id">
               <div class="media-body lh-125 border-bottom border-gray">
                   {{exp.id}}. Exported {{ exp.ago.length > 0 ? exp.ago : 0 + " seconds" }} ago
                   <div style="display: inline">
@@ -73,6 +73,7 @@
                       v-for="tag in exp.tags"
                       class="badge badge-secondary"
                       style="margin: 1px"
+                      :key="tag"
                     >
                       {{tag}}
                     </span>
@@ -99,7 +100,7 @@
           <div class="card my-3 p-3 shadow-sm mr-2">
             <h6 class="border-bottom border-gray pb-2"><b>Exisiting Memebers</b></h6>
             
-            <div class="media text-muted pt-3" v-for="user in users">
+            <div class="media text-muted pt-3" v-for="user in users" :key="user.id">
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png" class="mr-2 rounded" style="width: 32px; height: 32px;">
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -124,7 +125,7 @@
               
               <div v-if="stats.total" class="card my-3 p-3 shadow-sm col-3 mr-2">
                 <h6 class="border-bottom border-gray pb-2"><b>Total</b></h6>
-                <div class="row" v-for="stat in Object.keys(stats.total)">
+                <div class="row" v-for="stat in Object.keys(stats.total)" :key="stat">
                   <strong class="col-8">{{stat}}:</strong>
                   <span class="col-4">{{stats.total[stat].toFixed(0)}}</span>
                 </div>
@@ -132,7 +133,7 @@
 
               <div v-if="stats.average" class="card my-3 p-3 shadow-sm col-4 mr-2">
                 <h6 class="border-bottom border-gray pb-2"><b>Average</b></h6>
-                <div class="row" v-for="stat in Object.keys(stats.average)">
+                <div class="row" v-for="stat in Object.keys(stats.average)" :key="stat">
                   <strong class="col-8">{{stat}}:</strong>
                   <span class="col-4">{{stats.average[stat].toFixed(0)}}</span>
                 </div>

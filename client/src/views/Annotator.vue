@@ -99,7 +99,8 @@
       <FileTitle
         :previousimage="image.previous"
         :nextimage="image.next"
-        :filename="image.filename"
+        :filename="filename"
+        :folders="folders"
         ref="filetitle"
       />
 
@@ -219,6 +220,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import paper from "paper";
 import axios from "axios";
 
@@ -301,6 +303,10 @@ export default {
     identifier: {
       type: [Number, String],
       required: true
+    },
+    folders: {
+      type: Array,
+      default: []
     }
   },
   data() {
@@ -513,7 +519,7 @@ export default {
         this.text.topLeft = new paper.PointText(positionTopLeft);
         this.text.topLeft.fontSize = fontSize;
         this.text.topLeft.fillColor = "white";
-        this.text.topLeft.content = this.image.filename;
+        this.text.topLeft.content = this.filename;
 
         let positionTopRight = new paper.Point(
           width / 2,
@@ -543,7 +549,7 @@ export default {
       this.addProcess(process);
       this.loading.data = true;
       axios
-        .get("/api/annotator/data/" + this.image.id)
+        .get("/api/annotator/data/" + this.image.id + '?folders=' + (this.folders ? this.folders.join('/') : ''))
         .then(response => {
           let data = response.data;
 
@@ -569,7 +575,7 @@ export default {
           this.setPreferences(preferences);
 
           if (this.text.topLeft != null) {
-            this.text.topLeft.content = this.image.filename;
+            this.text.topLeft.content = this.filename;
           }
 
           this.$nextTick(() => {
@@ -810,11 +816,11 @@ export default {
     },
     nextImage() {
       if(this.image.next != null)
-        this.$refs.filetitle.route(this.image.next);
+        this.$refs.filetitle.route(this.image.next, this.folders);
     },
     previousImage() {
       if(this.image.previous != null)
-        this.$refs.filetitle.route(this.image.previous);
+        this.$refs.filetitle.route(this.image.previous, this.folders);
     }
   },
   watch: {
@@ -886,6 +892,12 @@ export default {
     },
     user() {
       return this.$store.getters["user/user"];
+    },
+    filename() {
+      if (this.folders.length > 0) {
+        return this.folders.join('/') + '/' + this.image.filename
+      }
+      return this.image.filename
     }
   },
   sockets: {
