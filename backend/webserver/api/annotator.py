@@ -1,6 +1,6 @@
 import datetime
 
-from flask_restplus import Namespace, Resource
+from flask_restplus import Namespace, Resource, reqparse
 from flask_login import login_required, current_user
 from flask import request
 
@@ -15,6 +15,9 @@ from database import (
 )
 
 api = Namespace('annotator', description='Annotator related operations')
+
+data_id = reqparse.RequestParser()
+data_id.add_argument('folders', type=str, default=None, required=False, help='folders of image id')
 
 
 @api.route('/data')
@@ -135,7 +138,6 @@ class AnnotatorData(Resource):
 
         return {"success": True}
 
-
 @api.route('/data/<int:image_id>')
 class AnnotatorId(Resource):
 
@@ -143,6 +145,10 @@ class AnnotatorId(Resource):
     @login_required
     def get(self, image_id):
         """ Called when loading from the annotator client """
+
+        args = data_id.parse_args()
+        folders = args.get('folders')
+
         image = ImageModel.objects(id=image_id)\
             .exclude('events').first()
 
@@ -160,6 +166,9 @@ class AnnotatorId(Resource):
         images = ImageModel.objects(dataset_id=dataset.id, deleted=False)
         pre = images.filter(file_name__lt=image.file_name).order_by('-file_name').first()
         nex = images.filter(file_name__gt=image.file_name).order_by('file_name').first()
+        if len(folders) > 1:
+          pre = images.filter(file_name__lt=image.file_name, path__contains=folders).order_by('-file_name').first()
+          nex = images.filter(file_name__gt=image.file_name, path__contains=folders).order_by('file_name').first()
 
         preferences = {}
         if not Config.LOGIN_DISABLED:
@@ -174,7 +183,8 @@ class AnnotatorId(Resource):
             'permissions': {
                 'dataset': dataset.permissions(current_user),
                 'image': image.permissions(current_user)
-            }
+            },
+            'folder': folders,
         }
 
         data['image']['previous'] = pre.id if pre else None
