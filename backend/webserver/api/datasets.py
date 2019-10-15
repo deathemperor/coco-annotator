@@ -359,6 +359,8 @@ class DatasetDataId(Resource):
         
         total = images.count()
         pages = int(total/per_page) + 1
+        if total == per_page:
+          pages = 1
         
         images = images.skip(page*per_page).limit(per_page)
         images_json = query_util.fix_ids(images)
