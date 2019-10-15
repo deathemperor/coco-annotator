@@ -74,7 +74,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form>
+            <form @submit.prevent="createCategory()">
               <div class="form-group">
                 <label>Category Name</label>
                 <input
