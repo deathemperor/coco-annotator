@@ -98,7 +98,7 @@
           </div>
           
           <div class="card my-3 p-3 shadow-sm mr-2">
-            <h6 class="border-bottom border-gray pb-2"><b>Exisiting Memebers</b></h6>
+            <h6 class="border-bottom border-gray pb-2"><b>Existing Members</b></h6>
             
             <div class="media text-muted pt-3" v-for="user in users" :key="user.id">
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png" class="mr-2 rounded" style="width: 32px; height: 32px;">
@@ -136,6 +136,22 @@
                 <div class="row" v-for="stat in Object.keys(stats.average)" :key="stat">
                   <strong class="col-8">{{stat}}:</strong>
                   <span class="col-4">{{stats.average[stat].toFixed(0)}}</span>
+                </div>
+              </div>
+
+              <div v-if="stats.categories" class="card my-3 p-3 shadow-sm col-4 mr-2">
+                <h6 class="border-bottom border-gray pb-2"><b>Annotations Per Category</b></h6>
+                <div class="row" v-for="stat in Object.keys(stats.categories)">
+                  <strong class="col-8">{{stat}}:</strong>
+                  <span class="col-4">{{stats.categories[stat].toFixed(0)}}</span>
+                </div>
+              </div>
+
+              <div v-if="stats.images_per_category" class="card my-3 p-3 shadow-sm col-4 mr-2">
+                <h6 class="border-bottom border-gray pb-2"><b>Annotated Images Per Category</b></h6>
+                <div class="row" v-for="stat in Object.keys(stats.images_per_category)">
+                  <strong class="col-8">{{stat}}:</strong>
+                  <span class="col-4">{{stats.images_per_category[stat].toFixed(0)}}</span>
                 </div>
               </div>
 
