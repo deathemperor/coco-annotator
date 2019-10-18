@@ -558,7 +558,6 @@ export default {
           this.pages = data.pages;
 
           this.subdirectories = data.subdirectories;
-          console.log(data)
           // this.scan.id = data.scanId;
           // this.generate.id = data.generateId;
           // this.importing.id = data.importId;
