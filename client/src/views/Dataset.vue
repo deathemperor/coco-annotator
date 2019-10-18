@@ -47,6 +47,10 @@
                 {{ folder }}
               </button>
             </li>
+            <li style="margin-left: 50%" v-if="folders.length > 0">
+              <button class="btn btn-sm btn-link" v-bind:class="{'disabled': !hasPreviousFolder()}" @click="gotoPreviousFolder()">Previous Folder</button> |
+              <button class="btn btn-sm btn-link" v-bind:class="{'disabled': !hasNextFolder()}" @click="gotoNextFolder()">Next Folder</button>
+            </li>
           </ol>
 
           <p class="text-center" v-if="images.length < 1">
@@ -474,6 +478,7 @@ export default {
       },
       users: [],
       subdirectories: [],
+      parentSubdirectories: [],
       status: {
         data: { state: true, message: "Loading data" }
       },
@@ -553,6 +558,7 @@ export default {
           this.pages = data.pages;
 
           this.subdirectories = data.subdirectories;
+          console.log(data)
           // this.scan.id = data.scanId;
           // this.generate.id = data.generateId;
           // this.importing.id = data.importId;
@@ -675,7 +681,37 @@ export default {
     stopDrag() {
       this.mouseDown = false;
       this.sidebar.canResize = false;
-    }
+    },
+    hasNextFolder() {
+      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1])
+      if (index < 0 || index === this.parentSubdirectories.length - 1) {
+        return false;
+      }
+      return true;
+    },
+    hasPreviousFolder() {
+      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1])
+      if (index < 0 || index === 0) {
+        return false;
+      }
+      return true;
+    },
+    gotoPreviousFolder() {
+      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1]);
+      if (index < 0 || index === 0) {
+        return false;
+      }
+      this.folders[this.folders.length - 1] = this.parentSubdirectories[index-1];
+      this.updatePage();
+    },
+    gotoNextFolder() {
+      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1]);
+      if (index < 0 || index === this.parentSubdirectories.length - 1) {
+        return false;
+      }
+      this.folders[this.folders.length - 1] = this.parentSubdirectories[index+1];
+      this.updatePage();
+    },
   },
   computed: {
     queryAnnotated() {
@@ -691,7 +727,7 @@ export default {
       let tags = {};
       this.categories.forEach(c => tags[c.id] = c.name);
       return tags;
-    }
+    },
   },
   sockets: {
     taskProgress(data) {
@@ -740,6 +776,7 @@ export default {
       this.updatePage();
     },
     folders() {
+      this.parentSubdirectories = this.subdirectories;
       this.updatePage();
     },
     "sidebar.drag"(canDrag) {
