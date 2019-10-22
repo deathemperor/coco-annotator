@@ -396,6 +396,8 @@ class DatasetDataId(Resource):
 
         subdirectories = [f for f in sorted(os.listdir(directory))
                           if os.path.isdir(directory + f) and not f.startswith('.')]
+        peer_directories = [f for f in sorted(os.listdir(directory + '/../'))
+                          if os.path.isdir(directory + '/../' + f) and not f.startswith('.')]
         
         categories = CategoryModel.objects(id__in=dataset.categories).only('id', 'name')
 
@@ -409,7 +411,8 @@ class DatasetDataId(Resource):
             "directory": directory,
             "dataset": query_util.fix_ids(dataset),
             "categories": query_util.fix_ids(categories),
-            "subdirectories": subdirectories
+            "subdirectories": subdirectories,
+            "peer_directories": peer_directories
         }
 
 
