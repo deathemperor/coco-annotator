@@ -103,6 +103,8 @@ export default {
 
       if (dataset.folders && dataset.folders.length > 0) {
         dataset.path = `/${dataset.folders.join('/')}`
+      } else {
+        dataset.path = ''
       }
 
       return dataset;
