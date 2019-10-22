@@ -145,7 +145,7 @@
 
               <div v-if="stats.categories" class="card my-3 p-3 shadow-sm col-4 mr-2">
                 <h6 class="border-bottom border-gray pb-2"><b>Annotations Per Category</b></h6>
-                <div class="row" v-for="stat in Object.keys(stats.categories)">
+                <div class="row" v-for="stat in Object.keys(stats.categories)" :key="stat">
                   <strong class="col-8">{{stat}}:</strong>
                   <span class="col-4">{{stats.categories[stat].toFixed(0)}}</span>
                 </div>
@@ -153,7 +153,7 @@
 
               <div v-if="stats.images_per_category" class="card my-3 p-3 shadow-sm col-4 mr-2">
                 <h6 class="border-bottom border-gray pb-2"><b>Annotated Images Per Category</b></h6>
-                <div class="row" v-for="stat in Object.keys(stats.images_per_category)">
+                <div class="row" v-for="stat in Object.keys(stats.images_per_category)" :key="stat">
                   <strong class="col-8">{{stat}}:</strong>
                   <span class="col-4">{{stats.images_per_category[stat].toFixed(0)}}</span>
                 </div>
@@ -472,7 +472,7 @@ export default {
       imageCount: 0,
       categories: [],
       images: [],
-      folders: [],
+      folders: this.$route.params.folders ? this.$route.params.folders.split('/') : [],
       dataset: {
         id: 0
       },
@@ -727,6 +727,10 @@ export default {
       this.categories.forEach(c => tags[c.id] = c.name);
       return tags;
     },
+    // fromFolders() {
+    //   console.log(this.$route)
+    //   return this.$route.params.fromFolders
+    // }
   },
   sockets: {
     taskProgress(data) {

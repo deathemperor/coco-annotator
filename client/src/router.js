@@ -47,7 +47,7 @@ export default new Router({
       props: true
     },
     {
-      path: "/dataset/:identifier",
+      path: "/dataset/:identifier/:folders*",
       name: "dataset",
       component: Dataset,
       props: true

@@ -565,6 +565,7 @@ export default {
 
           // Set other data
           this.dataset = data.dataset;
+          this.dataset.folders = this.folders;
           this.categories = data.categories;
 
           // Update status
