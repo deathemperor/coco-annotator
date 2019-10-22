@@ -99,9 +99,8 @@ export default {
     },
     dataset() {
       let dataset = this.$store.state.dataset;
-      if (dataset == null) return { name: "", id: "" };
+      if (dataset == null) return { name: "", id: "", path: "" };
 
-      dataset.path = ''
       if (dataset.folders && dataset.folders.length > 0) {
         dataset.path = `/${dataset.folders.join('/')}`
       }
