@@ -33,9 +33,9 @@
           <RouterLink
             class="nav-link"
 
-            :to="{path: `/dataset/${dataset.id}${dataset.folders ? `/${dataset.folders.join('/')}` : ''}`}"
+            :to="{path: `/dataset/${dataset.id}${dataset.path}`}"
           >
-            {{ dataset.name }}{{dataset.folders ? `/${dataset.folders.join('/')}` : ''}}
+            {{ dataset.name }}{{ dataset.path }}
           </RouterLink>
         </li>
         <li class="nav-item" :class="{ active: $route.name === 'categories' }">
@@ -101,8 +101,13 @@ export default {
       let dataset = this.$store.state.dataset;
       if (dataset == null) return { name: "", id: "" };
 
+      dataset.path = ''
+      if (dataset.folders && dataset.folders.length > 0) {
+        dataset.path = `/${dataset.folders.join('/')}`
+      }
+
       return dataset;
-    }
+    },
   },
   watch: {
     socket(connected) {
