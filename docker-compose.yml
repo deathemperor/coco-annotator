@@ -1,4 +1,5 @@
 version: "3"
+
 volumes:
   mongodb_data:
     external: false
@@ -9,6 +10,9 @@ networks:
 
 services:
   webserver:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     image: jsbroks/coco-annotator:webserver-stable
     container_name: annotator_webclient
     restart: always
@@ -27,6 +31,9 @@ services:
       - cocoannotator
   workers:
     container_name: annotator_workers
+    build:
+      context: .
+      dockerfile: ./backend/workers/Dockerfile
     image: jsbroks/coco-annotator:workers-stable
     volumes:
       - "./datasets:/datasets"
