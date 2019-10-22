@@ -478,7 +478,7 @@ export default {
       },
       users: [],
       subdirectories: [],
-      parentSubdirectories: [],
+      peerDirectories: [],
       status: {
         data: { state: true, message: "Loading data" }
       },
@@ -549,6 +549,7 @@ export default {
       })
         .then(response => {
           let data = response.data;
+          this.peerDirectories = data.peer_directories
 
           this.images = data.images;
           this.dataset = data.dataset;
@@ -682,33 +683,33 @@ export default {
       this.sidebar.canResize = false;
     },
     hasNextFolder() {
-      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1])
-      if (index < 0 || index === this.parentSubdirectories.length - 1) {
+      const index = this.peerDirectories.indexOf(this.folders[this.folders.length - 1])
+      if (index < 0 || index === this.peerDirectories.length - 1) {
         return false;
       }
       return true;
     },
     hasPreviousFolder() {
-      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1])
+      const index = this.peerDirectories.indexOf(this.folders[this.folders.length - 1])
       if (index < 0 || index === 0) {
         return false;
       }
       return true;
     },
     gotoPreviousFolder() {
-      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1]);
+      const index = this.peerDirectories.indexOf(this.folders[this.folders.length - 1]);
       if (index < 0 || index === 0) {
         return false;
       }
-      this.folders[this.folders.length - 1] = this.parentSubdirectories[index-1];
+      this.folders[this.folders.length - 1] = this.peerDirectories[index-1];
       this.updatePage();
     },
     gotoNextFolder() {
-      const index = this.parentSubdirectories.indexOf(this.folders[this.folders.length - 1]);
-      if (index < 0 || index === this.parentSubdirectories.length - 1) {
+      const index = this.peerDirectories.indexOf(this.folders[this.folders.length - 1]);
+      if (index < 0 || index === this.peerDirectories.length - 1) {
         return false;
       }
-      this.folders[this.folders.length - 1] = this.parentSubdirectories[index+1];
+      this.folders[this.folders.length - 1] = this.peerDirectories[index+1];
       this.updatePage();
     },
   },
@@ -779,7 +780,7 @@ export default {
       this.updatePage();
     },
     folders() {
-      this.parentSubdirectories = this.subdirectories;
+      this.peerDirectories = this.subdirectories;
       this.updatePage();
     },
     "sidebar.drag"(canDrag) {
