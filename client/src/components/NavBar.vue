@@ -35,7 +35,7 @@
 
             :to="{path: `/dataset/${dataset.id}${dataset.folders ? `/${dataset.folders.join('/')}` : ''}`}"
           >
-            {{ dataset.name }}{{dataset.folders ? `${dataset.folders.join('/')}` : ''}}
+            {{ dataset.name }}{{dataset.folders ? `/${dataset.folders.join('/')}` : ''}}
           </RouterLink>
         </li>
         <li class="nav-item" :class="{ active: $route.name === 'categories' }">
