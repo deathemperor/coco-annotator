@@ -101,10 +101,12 @@ export default {
       let dataset = this.$store.state.dataset;
       if (dataset == null) return { name: "", id: "", path: "" };
 
-      if (dataset.folders && dataset.folders.length > 0) {
-        dataset.path = `/${dataset.folders.join('/')}`
-      } else {
-        dataset.path = ''
+      if (typeof(dataset) === 'object') {
+        if (dataset.folders && dataset.folders.length > 0) {
+          dataset.path = `/${dataset.folders.join('/')}`
+        } else {
+          dataset.path = ''
+        }
       }
 
       return dataset;
