@@ -581,6 +581,7 @@ export default {
           this.image.next = data.image.next;
           this.image.previous = data.image.previous;
           this.image.categoryIds = data.image.category_ids || [];
+          this.image.status = data.image.status
 
           this.annotating = data.image.annotating || [];
 
