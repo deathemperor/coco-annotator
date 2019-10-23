@@ -100,7 +100,9 @@ export default {
     },
     folders: {
       type: Array,
-      default: null
+      default: function() {
+        return [];
+      }
     }
   },
   data() {
