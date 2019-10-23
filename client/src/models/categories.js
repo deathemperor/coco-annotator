@@ -12,5 +12,12 @@ export default {
   },
   create(create) {
     return axios.post(baseURL, { ...create });
+  },
+  getImages(id, params) {
+    return axios.get(`${baseURL}${id}/images`, {
+      params: {
+        ...params
+      }
+    })
   }
 };

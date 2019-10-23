@@ -7,6 +7,7 @@ import Annotator from "@/views/Annotator";
 import AdminPanel from "@/views/AdminPanel";
 import Datasets from "@/views/Datasets";
 import Categories from "@/views/Categories";
+import Images from "@/views/Images";
 import Undo from "@/views/Undo";
 import Dataset from "@/views/Dataset";
 import Auth from "@/views/Auth";
@@ -34,6 +35,12 @@ export default new Router({
       path: "/categories",
       name: "categories",
       component: Categories
+    },
+    {
+      path: "/categories/:categoryId/images",
+      name: "images",
+      component: Images,
+      props: true
     },
     {
       path: "/undo",

@@ -26,7 +26,7 @@
         <br />
 
         <div>
-          <p v-if="category.numberAnnotations > 0">
+          <p v-if="category.numberAnnotations > 0" @click="onCategoryClick">
             {{ category.numberAnnotations }} objects have been made with this
             category.
           </p>
@@ -156,7 +156,10 @@ export default {
           );
           this.$parent.updatePage();
         });
-    }
+    },
+    onCategoryClick() {
+      this.$router.push({ name: "images", params: { categoryId: this.category.id } });
+    },
   }
 };
 </script>

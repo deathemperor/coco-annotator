@@ -4,7 +4,7 @@ from mongoengine.errors import NotUniqueError
 
 from ..util.pagination_util import Pagination
 from ..util import query_util
-from database import CategoryModel, AnnotationModel
+from database import CategoryModel, AnnotationModel, ImageModel
 
 import datetime
 
@@ -142,4 +142,34 @@ class CategoriesData(Resource):
             "pagination": pagination.export(),
             "page": page,
             "categories": categories
+        }
+
+@api.route('/<int:category_id>/images')
+class CategoriesImages(Resource):
+    @api.expect(page_data)
+    def get(self, category_id):
+        """"Endpoint called by category image list """
+        args = page_data.parse_args()
+        limit = args['limit']
+        page = args['page']
+
+        category = current_user.categories.filter(id=category_id).first()
+
+        # check if the id exits
+        if category is None:
+            return {"message": "Invalid category id"}, 400
+
+        annotations = AnnotationModel.objects(category_id=category_id)
+
+        images = []
+        for annotation in annotations:
+          images.append(query_util.fix_ids(ImageModel.objects(id=annotation.image_id).first()))
+
+        pagination = Pagination(len(images), limit, page)
+
+        return {
+          "category": query_util.fix_ids(category),
+          "pagination": pagination.export(),
+          "page": page,
+          "images": images[pagination.start:pagination.end]
         }
