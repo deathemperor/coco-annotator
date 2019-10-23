@@ -26,7 +26,7 @@
         <br />
 
         <div>
-          <p v-if="category.numberAnnotations > 0" @click="onCategoryClick">
+          <p v-if="category.numberAnnotations > 0" @click="onCategoryClick" style="cursor: pointer;">
             {{ category.numberAnnotations }} objects have been made with this
             category.
           </p>
