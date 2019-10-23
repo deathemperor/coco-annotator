@@ -83,6 +83,9 @@
 
       <DownloadButton :image="image" />
       <SaveButton />
+      <CompleteButton />
+      <VerifyButton v-show="$store.getters['user/isAdmin']" />
+      <RejectButton v-show="$store.getters['user/isAdmin']" />
       <ModeButton v-model="mode" />
       <SettingsButton
         :metadata="image.metadata"
@@ -245,6 +248,9 @@ import CopyAnnotationsButton from "@/components/annotator/tools/CopyAnnotationsB
 import CenterButton from "@/components/annotator/tools/CenterButton";
 import DownloadButton from "@/components/annotator/tools/DownloadButton";
 import SaveButton from "@/components/annotator/tools/SaveButton";
+import CompleteButton from "@/components/annotator/tools/CompleteButton";
+import VerifyButton from "@/components/annotator/tools/VerifyButton";
+import RejectButton from "@/components/annotator/tools/RejectButton";
 import SettingsButton from "@/components/annotator/tools/SettingsButton";
 import ModeButton from "@/components/annotator/tools/ModeButton";
 import DeleteButton from "@/components/annotator/tools/DeleteButton";
@@ -282,6 +288,9 @@ export default {
     KeypointTool,
     DownloadButton,
     SaveButton,
+    CompleteButton,
+    VerifyButton,
+    RejectButton,
     SettingsButton,
     DeleteButton,
     CenterButton,
@@ -306,7 +315,9 @@ export default {
     },
     folders: {
       type: Array,
-      default: []
+      default() {
+        return []
+      }
     }
   },
   data() {
@@ -423,6 +434,16 @@ export default {
           if (callback != null) callback();
         })
         .finally(() => this.removeProcess(process));
+    },
+    updateStatus(status) {
+      let process = "Completing";
+      this.addProcess(process);
+      axios
+        .put(`/api/image/${this.image.id}?status=${status}`)
+        .then(() => {
+
+        })
+        .finally(() => this.removeProcess(process))
     },
     onwheel(e) {
       e.preventDefault();

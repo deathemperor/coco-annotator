@@ -37,6 +37,9 @@ image_download.add_argument('thumbnail', type=bool, default=False)
 image_download.add_argument('width', type=int)
 image_download.add_argument('height', type=int)
 
+image_status = reqparse.RequestParser()
+image_status.add_argument('status', type=str, default='completed')
+
 copy_annotations = reqparse.RequestParser()
 copy_annotations.add_argument('category_ids', location='json', type=list,
                               required=False, default=None, help='Categories to copy')
@@ -106,8 +109,7 @@ class Images(Resource):
         image.close()
         pil_image.close()
         return query_util.fix_ids(image_model)
-
-
+    
 @api.route('/<int:image_id>')
 class ImageId(Resource):
 
@@ -155,6 +157,36 @@ class ImageId(Resource):
 
         image.update(set__deleted=True, set__deleted_date=datetime.datetime.now())
         return {"success": True}
+
+    @api.expect(image_status)
+    def put(self, image_id):
+        args = image_status.parse_args()
+        status = args.get('status')
+        image = current_user.images.filter(id=image_id).exclude('deleted_date').first()
+
+        current_status = image.status
+
+        if image is None:
+            return {"message": "Invalid image ID"}, 404
+        if status == 'completed':
+            current_status['completed'] = True
+            current_status['completedDate'] = datetime.datetime.utcnow()
+            current_status['completedBy'] = current_user.id
+        elif status == 'verified':
+            current_status['verified'] = True
+            current_status['verifiedDate'] = datetime.datetime.utcnow()
+            current_status['verifiedBy'] = current_user.id
+        elif status == 'rejected':
+            current_status['rejected'] = True
+            current_status['rejectedDate'] = datetime.datetime.utcnow()
+            current_status['rejectedBy'] = current_user.id
+            current_status['completed'] = False
+        else:
+            return {"message": "Invalid status"}, 400
+
+        image.update(status=current_status)
+
+        return {'success': True}, 200
 
 
 @api.route('/copy/<int:from_id>/<int:to_id>/annotations')
@@ -206,3 +238,16 @@ class ImageCoco(Resource):
 
         return coco_util.get_image_coco(image_id)
 
+# @api.route('/<int:image_id>/')
+# class ImageUpdateStatus(Resource):
+#     def post(self):
+#         image = current_user.images.filter(id=image_id).exclude('deleted_date').first()
+
+#         if image is None:
+#             return {"message": "Invalid image ID"}, 404
+
+#         image.status.completed = True
+#         image.status.completedDate = datetime.datetime.utcnow()
+#         image.save()
+
+#         return {'success': True}, 200

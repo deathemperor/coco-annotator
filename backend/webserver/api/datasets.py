@@ -372,7 +372,7 @@ class DatasetDataId(Resource):
         
         images = current_user.images \
             .filter(dataset_id=dataset_id, path__startswith=directory, deleted=False, **query) \
-            .order_by(order).only('id', 'file_name', 'annotating', 'annotated', 'num_annotations')
+            .order_by(order).only('id', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status')
         
         total = images.count()
         pages = int(total/per_page) + 1

@@ -11,7 +11,7 @@
           :src="imageUrl"
           :src-placeholder="loaderUrl"
           class="card-img-top"
-          style="width: 100%; display: block"
+          style="width: 100%; display: block; cursor: pointer"
           :style="{'opacity': annotated ? 0.3 : 1}"
         />
       </div>
@@ -68,6 +68,21 @@
               v-show="image.num_annotations > 1"
               >s</span
             >
+            <i
+              v-if="image.status && image.status.verified"
+              class="fa fa-check-circle"
+              style="padding-left:10px"
+            />
+            <i
+              v-else-if="image.status && image.status.rejected"
+              class="fa fa-times"
+              style="padding-left:10px"
+            />
+            <i
+              v-else-if="image.status && image.status.completed"
+              class="fa fa-check"
+              style="padding-left:10px"
+            />
           </p>
           <p v-show="image.annotated == true && image.num_annotations < 0">Annotated</p>
           <p v-show="image.annotated == false">No annotations</p>

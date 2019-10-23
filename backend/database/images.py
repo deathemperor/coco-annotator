@@ -52,6 +52,7 @@ class ImageModel(DynamicDocument):
     milliseconds = IntField(default=0)
     events = EmbeddedDocumentListField(Event)
     regenerate_thumbnail = BooleanField(default=False)
+    status = DictField()
 
     @classmethod
     def create_from_path(cls, path, dataset_id=None):
