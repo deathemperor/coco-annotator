@@ -84,8 +84,8 @@
       <DownloadButton :image="image" />
       <SaveButton />
       <CompleteButton />
-      <VerifyButton v-show="$store.getters['user/isAdmin']" />
-      <RejectButton v-show="$store.getters['user/isAdmin']" />
+      <VerifyButton v-show="$store.getters['user/isAdmin'] && image.status && image.status.completed" />
+      <RejectButton v-show="$store.getters['user/isAdmin'] && image.status && image.status.completed" />
       <ModeButton v-model="mode" />
       <SettingsButton
         :metadata="image.metadata"
