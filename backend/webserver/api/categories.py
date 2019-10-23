@@ -159,17 +159,20 @@ class CategoriesImages(Resource):
         if category is None:
             return {"message": "Invalid category id"}, 400
 
-        annotations = AnnotationModel.objects(category_id=category_id)
+        image_ids = AnnotationModel.objects(category_id=category_id).distinct('image_id')
+        image_ids.sort()
+
+        pagination = Pagination(len(image_ids), limit, page)
+        image_ids = image_ids[pagination.start:pagination.end]
 
         images = []
-        for annotation in annotations:
-          images.append(query_util.fix_ids(ImageModel.objects(id=annotation.image_id).first()))
+        for image_id in image_ids:
+          images.append(query_util.fix_ids(ImageModel.objects(id=image_id).first()))
 
-        pagination = Pagination(len(images), limit, page)
 
         return {
           "category": query_util.fix_ids(category),
           "pagination": pagination.export(),
           "page": page,
-          "images": images[pagination.start:pagination.end]
+          "images": images,
         }
