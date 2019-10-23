@@ -167,8 +167,9 @@ class CategoriesImages(Resource):
 
         images = []
         for image_id in image_ids:
-          images.append(query_util.fix_ids(ImageModel.objects(id=image_id).first()))
-
+          img = ImageModel.objects(id=image_id, annotated=true).first()
+          if img:
+            images.append(query_util.fix_ids(img))
 
         return {
           "category": query_util.fix_ids(category),
