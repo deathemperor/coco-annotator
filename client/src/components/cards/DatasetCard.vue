@@ -8,7 +8,7 @@
         :src="imageUrl"
         class="card-img-top"
         @error="imageError = true"
-        style="width: 100%; display: block;"
+        style="width: 100%; display: block; cursor: pointer"
       />
 
       <!-- Card Body -->
