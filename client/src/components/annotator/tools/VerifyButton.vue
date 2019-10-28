@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     execute() {
-      this.$parent.updateStatus('verified');
+      this.$parent.updateStatus("verified");
     }
   }
 };
