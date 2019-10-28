@@ -6,11 +6,16 @@ export default {
       color: {
         enabled: "white",
         active: "#2ecc71",
-        disabled: "gray"
+        disabled: "gray",
       },
       iconColor: "",
       delay: 400
     };
+  },
+  props: {
+    activeColor: {
+      type: String
+    }
   },
   methods: {
     click() {
@@ -26,7 +31,18 @@ export default {
       }, this.delay);
     }
   },
+  watch: {
+    activeColor() {
+      if (this.activeColor) {
+        this.iconColor = this.activeColor;
+      }
+    }
+  },
   created() {
-    this.iconColor = this.color.enabled;
+    if (this.activeColor) {
+      this.iconColor = this.activeColor;
+    } else {
+      this.iconColor = this.color.enabled;
+    }
   }
 };
