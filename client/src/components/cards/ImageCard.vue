@@ -15,6 +15,10 @@
           :style="{'opacity': annotated ? 0.3 : 1}"
         />
       </div>
+      <div style="position: absolute; top: 0; bottom: 0; right: 0; z-index: 100">
+        <VerifyButton :activeColor="'gray'" v-show="image.status && !image.status.verified && image.status.completed" />
+        <RejectButton :activeColor="'gray'" v-show="image.status && !image.status.rejected && image.status.completed" />
+      </div>
 
       <b v-if="annotated" class="overlay-text text-center">
         Being annotated by {{image.annotating.join(', ')}}
@@ -105,9 +109,15 @@
 
 <script>
 import axios from "axios";
+import VerifyButton from "@/components/annotator/tools/VerifyButton";
+import RejectButton from "@/components/annotator/tools/RejectButton";
 
 export default {
   name: "ImageCard",
+  components: {
+    VerifyButton,
+    RejectButton
+  },
   props: {
     image: {
       type: Object,
@@ -162,7 +172,14 @@ export default {
       axios.delete("/api/image/" + this.image.id).then(() => {
         this.$parent.updatePage();
       });
-    }
+    },
+    updateStatus(status) {
+      axios
+        .put(`/api/image/${this.image.id}?status=${status}`)
+        .then(() => {
+
+        })
+    },
   },
   computed: {
     imageUrl() {
