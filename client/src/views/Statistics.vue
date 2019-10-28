@@ -22,7 +22,7 @@
 
             <tbody>
               <tr v-for="(user, index) in users" :key="index" style="cursor: pointer" @click="viewDetail(user.username)">
-                <td>{{ user.name }} ({{ user.username }}) {{ user.id }}</td>
+                <td>{{ user.name }} ({{ user.username }})</td>
                 <td class="text-center">
                   {{ user.completed_images_total }}
                 </td>
