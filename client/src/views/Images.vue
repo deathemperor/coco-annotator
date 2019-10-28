@@ -8,29 +8,16 @@
       <div class="bg-light text-left" style="overflow: auto; height: calc(100vh - 100px); margin: 10px">
         <div class="container">
           
-          <p class="text-center" v-if="images.length < 1">
-            No images found in category.
-          </p>
-          <div v-else>
-            <div style="padding-top: 10px" />
-            <h3 class="text-center">
-              <i
-                class="fa fa-circle color-icon"
-                aria-hidden="true"
-                :style="{ color: category.color }"
-              />
-              {{ category.name }}
-            </h3>
-            <p class="text-center">
-              Total of <strong>{{ imageCount }}</strong> images
-              displayed on <strong>{{ pages }}</strong> pages.
-            </p>
-            <Pagination :pages="pages" @pagechange="updatePage" />
-            <div class="row">
-              <ImageCard v-for="image in images" :key="image.id" :image="image" />
-            </div>
-            <Pagination :pages="pages" @pagechange="updatePage" />
-          </div>
+          <div style="padding-top: 10px" />
+          <h3 class="text-center">
+            <i
+              class="fa fa-circle color-icon"
+              aria-hidden="true"
+              :style="{ color: category.color }"
+            />
+            {{ category.name }}
+          </h3>
+          <ImageList :images="images" :pages="pages" :update="updatePage" />
 
         </div>
 
@@ -44,8 +31,7 @@
 import toastrs from "@/mixins/toastrs";
 import Dataset from "@/models/datasets";
 import Category from "@/models/categories";
-import ImageCard from "@/components/cards/ImageCard";
-import Pagination from "@/components/Pagination";
+import ImageList from "@/components/ImageList";
 import JQuery from "jquery";
 
 import { mapMutations } from "vuex";
@@ -55,8 +41,7 @@ let $ = JQuery;
 export default {
   name: "Dataset",
   components: {
-    ImageCard,
-    Pagination,
+    ImageList,
   },
   mixins: [toastrs],
   props: {
