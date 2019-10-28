@@ -7,6 +7,9 @@ import Annotator from "@/views/Annotator";
 import AdminPanel from "@/views/AdminPanel";
 import Datasets from "@/views/Datasets";
 import Categories from "@/views/Categories";
+import Statistics from "@/views/Statistics";
+import UserStatistics from "@/views/UserStatistics";
+import UserImages from "@/views/UserImages";
 import Images from "@/views/Images";
 import Undo from "@/views/Undo";
 import Dataset from "@/views/Dataset";
@@ -35,6 +38,23 @@ export default new Router({
       path: "/categories",
       name: "categories",
       component: Categories
+    },
+    {
+      path: "/statistics",
+      name: "statistics",
+      component: Statistics,
+    },
+    {
+      path: "/statistics/:username",
+      name: "userStatistics",
+      component: UserStatistics,
+      props: true
+    },
+    {
+      path: "/statistics/:username/images/:date?",
+      name: "userImages",
+      component: UserImages,
+      props: true
     },
     {
       path: "/categories/:categoryId/images",
