@@ -5,8 +5,10 @@ from flask_restplus import Namespace, Resource, reqparse
 from database import UserModel
 from config import Config
 from ..util.query_util import fix_ids
+from ..util.pagination_util import Pagination
 
 import logging
+import datetime
 logger = logging.getLogger('gunicorn.error')
 
 api = Namespace('user', description='User related operations')
@@ -25,6 +27,16 @@ set_password = reqparse.RequestParser()
 set_password.add_argument('password', required=True, location='json')
 set_password.add_argument('new_password', required=True, location='json')
 
+user_stats = reqparse.RequestParser()
+user_stats.add_argument('start_date', required=True)
+user_stats.add_argument('end_date', required=True)
+
+user_images = reqparse.RequestParser()
+user_images.add_argument('date', required=False)
+
+page_data = reqparse.RequestParser()
+page_data.add_argument('page', default=1, type=int)
+page_data.add_argument('limit', default=20, type=int)
 
 @api.route('/')
 class User(Resource):
@@ -124,3 +136,104 @@ class UserLogout(Resource):
         logout_user()
         return {'success': True}
 
+@api.route('/stats')
+class UserImages(Resource):
+    def get(self):
+        users = UserModel.objects().only('id', 'username', 'name', 'online', 'is_admin', 'last_seen').all()
+        
+        stats = []
+        for user in users:
+            user['completed_images_total'] = user.images.filter(
+                                annotated=True,
+                                status__completed=True,
+                                status__completedBy=user.id).count()
+            user['verified_images_total'] = user.images.filter(
+                                annotated=True,
+                                status__verified=True,
+                                status__completedBy=user.id).count()
+            user['rejected_images_total'] = user.images.filter(
+                                annotated=True,
+                                status__rejected=True,
+                                status__completedBy=user.id).count()
+            stats.append(fix_ids(user))
+        
+        return stats
+
+@api.route('/<string:username>/stats')
+class UserStats(Resource):
+    def get(self, username):
+        user = UserModel.objects(username=username).only('id', 'name', 'username', 'is_admin', 'last_seen').first()
+        if user is None:
+            return {'success': False, 'message': 'Could not find user'}, 404
+        
+        args = user_stats.parse_args()
+        start_date = args.get('start_date')
+        end_date = args.get('end_date')
+        
+        start = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+        end = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+        images = user.images.filter(
+          annotated=True,
+          status__completed=True,
+          status__completedBy=user.id,
+          status__completedDate__gte=start,
+          status__completedDate__lte=end)
+
+        user['stats'] = {}
+        for image in images:
+          day = image.status['completedDate'].strftime('%Y%m%d')
+          if not day in user['stats']:
+            user['stats'][day] = {
+              'completedCount': 0,
+              'verifiedCount': 0,
+              'rejectedCount': 0,
+              'day': image.status['completedDate'].strftime('%Y-%m-%d')
+            }
+          if image.status['completedDate']:
+            user['stats'][day]['completedCount'] += 1
+          if 'verifiedDate' in image.status:
+            user['stats'][day]['verifiedCount'] += 1
+          if 'rejectedDate' in image.status:
+            user['stats'][day]['rejectedCount'] += 1
+
+        # user.images.filter(annotated=True, status__completed=True, status__completedBy=user.id)
+
+        return fix_ids(user)
+
+@api.route('/<string:username>/images')
+class UserImages(Resource):
+    def get(self, username):
+        args = user_images.parse_args()
+        date = args.get('date')
+
+        args = page_data.parse_args()
+        limit = args['limit']
+        page = args['page']
+
+        user = UserModel.objects(username=username).first()
+        if user is None:
+            return {'success': False, 'message': 'Could not find user'}, 404
+        
+        if date:
+            start = datetime.datetime.strptime(date, '%Y-%m-%d')
+            end = datetime.datetime.strptime(date, '%Y-%m-%d') + datetime.timedelta(days=1)
+            images = user.images.filter(
+                      annotated=True,
+                      status__completed=True,
+                      status__completedBy=user.id,
+                      status__completedDate__gte=start,
+                      status__completedDate__lte=end
+                    ).only(
+                      'id', 'dataset_id', 'path', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status'
+                    )
+        else:
+            images = user.images.filter(annotated=True, status__completed=True, status__completedBy=user.id).only(
+                'id', 'dataset_id', 'path', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status'
+              )
+        pagination = Pagination(len(images), limit, page)
+        images = fix_ids(images[pagination.start:pagination.end])
+        return {
+            "pagination": pagination.export(),
+            "page": page,
+            "images": images
+        }
