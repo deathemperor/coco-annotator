@@ -83,9 +83,9 @@
 
       <DownloadButton :image="image" />
       <SaveButton />
-      <CompleteButton />
-      <VerifyButton v-show="$store.getters['user/isAdmin'] && image.status && image.status.completed" />
-      <RejectButton v-show="$store.getters['user/isAdmin'] && image.status && image.status.completed" />
+      <CompleteButton :activeColor="((image.status && image.status.completed) ? 'green' : '')" />
+      <VerifyButton :activeColor="((image.status && image.status.verified) ? 'green' : '')" v-show="$store.getters['user/isAdmin'] && image.status" />
+      <RejectButton :activeColor="((image.status && image.status.rejected) ? 'red' : '')" v-show="$store.getters['user/isAdmin'] && image.status" />
       <ModeButton v-model="mode" />
       <SettingsButton
         :metadata="image.metadata"
@@ -582,6 +582,7 @@ export default {
           this.image.previous = data.image.previous;
           this.image.categoryIds = data.image.category_ids || [];
           this.image.status = data.image.status
+          console.log(this.image.status)
 
           this.annotating = data.image.annotating || [];
 
@@ -1097,5 +1098,8 @@ export default {
   border: none;
   text-align: center;
   border-radius: 4px;
+}
+.active-status {
+  color: green;
 }
 </style>
