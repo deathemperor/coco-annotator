@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { mapMutations } from "vuex";
 
 export default {
@@ -166,7 +167,28 @@ export default {
           default: ["shift", "click"],
           name: "Subtract Selection",
           readonly: true
-        }
+        },
+        {
+          default: ["*"],
+          name: "Complete",
+          function: () => {
+            this.updateStatus("completed")
+          }
+        },
+        {
+          default: ["+"],
+          name: "Verify",
+          function: () => {
+            this.updateStatus("verified")
+          }
+        },
+        {
+          default: ["-"],
+          name: "Reject",
+          function: () => {
+            this.updateStatus("rejected")
+          }
+        },
       ];
     }
   },
