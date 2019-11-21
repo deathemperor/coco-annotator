@@ -1,12 +1,12 @@
 export default {
   template:
-    "<div><i v-tooltip.right='name' class='fa fa-x' :class='icon' :style='{ color: iconColor }' @click='click'></i><br></div>",
+    "<div :style='{fontSize: fontSize}'><i v-tooltip.right='name' class='fa fa-x' :class='icon' :style='{ color: iconColor }' @click='click'></i><br></div>",
   data() {
     return {
       color: {
         enabled: "white",
         active: "#2ecc71",
-        disabled: "gray",
+        disabled: "gray"
       },
       iconColor: "",
       delay: 400
@@ -15,6 +15,10 @@ export default {
   props: {
     activeColor: {
       type: String
+    },
+    fontSize: {
+      type: String,
+      default: "1.0rem"
     }
   },
   methods: {
