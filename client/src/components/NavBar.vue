@@ -42,7 +42,6 @@
           <RouterLink class="nav-link" to="/categories">Categories</RouterLink>
         </li>
         <li
-          v-show="$store.getters['user/isAdmin']"
           class="nav-item"
           :class="{ active: $route.name === 'statistics' }">
           <RouterLink class="nav-link" to="/statistics">Statistics</RouterLink>

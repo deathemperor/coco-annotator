@@ -176,11 +176,13 @@ class ImageId(Resource):
             current_status['verified'] = True
             current_status['verifiedDate'] = datetime.datetime.utcnow()
             current_status['verifiedBy'] = current_user.id
+            current_status['rejected'] = False
         elif status == 'rejected':
             current_status['rejected'] = True
             current_status['rejectedDate'] = datetime.datetime.utcnow()
             current_status['rejectedBy'] = current_user.id
-            current_status['completed'] = False
+            current_status['verified'] = False
+
         else:
             return {"message": "Invalid status"}, 400
 

@@ -33,6 +33,7 @@ user_stats.add_argument('end_date', required=True)
 
 user_images = reqparse.RequestParser()
 user_images.add_argument('date', required=False)
+user_images.add_argument('status', required=False)
 
 page_data = reqparse.RequestParser()
 page_data.add_argument('page', default=1, type=int)
@@ -174,7 +175,7 @@ class UserStats(Resource):
         end = datetime.datetime.strptime(end_date, '%Y-%m-%d')
         images = user.images.filter(
           annotated=True,
-          status__completed=True,
+          # status__completed=True,
           status__completedBy=user.id,
           status__completedDate__gte=start,
           status__completedDate__lte=end)
@@ -205,6 +206,8 @@ class UserImages(Resource):
     def get(self, username):
         args = user_images.parse_args()
         date = args.get('date')
+        status = args['status']
+        logger.info(status)
 
         args = page_data.parse_args()
         limit = args['limit']
@@ -219,7 +222,8 @@ class UserImages(Resource):
             end = datetime.datetime.strptime(date, '%Y-%m-%d') + datetime.timedelta(days=1)
             images = user.images.filter(
                       annotated=True,
-                      status__completed=True,
+                      # status__completed=True,
+                      status__rejected=True,
                       status__completedBy=user.id,
                       status__completedDate__gte=start,
                       status__completedDate__lte=end
@@ -227,7 +231,12 @@ class UserImages(Resource):
                       'id', 'dataset_id', 'path', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status'
                     )
         else:
-            images = user.images.filter(annotated=True, status__completed=True, status__completedBy=user.id).only(
+            images = user.images.filter(
+                annotated=True,
+                # status__completed=True, 
+                status__completedBy=user.id,
+                **{'{}__{}'.format('status' , status): True}
+              ).only(
                 'id', 'dataset_id', 'path', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status'
               )
         pagination = Pagination(len(images), limit, page)

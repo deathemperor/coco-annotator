@@ -21,16 +21,16 @@
             </thead>
 
             <tbody>
-              <tr v-for="(user, index) in users" :key="index" style="cursor: pointer" @click="viewDetail(user.username)">
-                <td>{{ user.name }} ({{ user.username }})</td>
+              <tr v-for="(user, index) in users" :key="index" style="cursor: pointer" v-show="$store.getters['user/isAdmin'] || user.username == $store.getters['user/user'].username" @click="viewDetail(user.username)">
+                <td>{{ user.name }} ({{ user.username }}) {{ user.online ? 'x' : ''}}</td>
                 <td class="text-center">
-                  {{ user.completed_images_total }}
+                  <a :href="`#/statistics/${user.username}/images/?status=completed`">{{ user.completed_images_total }}</a>
                 </td>
                 <td class="text-center">
-                  {{ user.verified_images_total }}
+                  <a :href="`#/statistics/${user.username}/images/?status=verified`">{{ user.verified_images_total }}</a>
                 </td>
                 <td class="text-center">
-                  {{ user.rejected_images_total }}
+                  <a :href="`#/statistics/${user.username}/images/?status=rejected`">{{ user.rejected_images_total }}</a>
                 </td>
               </tr>
             </tbody>
@@ -58,6 +58,9 @@ export default {
   methods: {
     viewDetail(username) {
       this.$router.push({name: 'userStatistics', params: {username}})
+    },
+    viewImages(username, status) {
+      this.$router.push({path: `/statistics/${username}/images/`, query: { status }});
     }
   },
   watch: {},

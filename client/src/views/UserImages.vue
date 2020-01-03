@@ -8,7 +8,11 @@
         style="overflow: auto; height: calc(100vh - 100px); margin: 10px"
       >
         <div class="container">
-
+          Filter: <select v-model="status">
+                    <option>completed</option>
+                    <option>verified</option>
+                    <option>rejected</option>
+                  </select>
           <div style="padding-top: 10px" />
           <ImageList
             :images="images"
@@ -48,16 +52,14 @@ export default {
     },
     date: {
       type: String
-    },
+    }
   },
   data() {
     return {
       pages: 1,
       imageCount: 0,
       images: [],
-      status: {
-        data: { state: true, message: "Loading data" }
-      }
+      status: ""
     };
   },
   methods: {
@@ -69,7 +71,8 @@ export default {
       User.getUserImages(this.username, {
         date: this.date,
         page: page,
-        limit: this.limit
+        limit: this.limit,
+        status: this.status
       })
         .then(response => {
           const { data } = response;
@@ -86,8 +89,16 @@ export default {
   },
   computed: {},
   sockets: {},
-  watch: {},
+  watch: {
+    status() {
+      this.$router.replace({query: {...this.$route.query, status: this.status}})
+    }
+  },
   created() {
+    if (this.$store.getters['user/user'].username !== this.username) {
+      return;
+    }
+    this.status = this.$route.query.status;
     this.updatePage();
   }
 };
