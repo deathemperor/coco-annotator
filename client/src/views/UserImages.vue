@@ -95,7 +95,8 @@ export default {
     }
   },
   created() {
-    if (this.$store.getters['user/user'].username !== this.username) {
+    if (!this.$store.getters['user/isAdmin'] || !this.$store.getters['user/user'] 
+        || this.$store.getters['user/user'].username !== this.username) {
       return;
     }
     this.status = this.$route.query.status;
