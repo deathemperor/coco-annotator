@@ -206,7 +206,9 @@ class UserImages(Resource):
     def get(self, username):
         args = user_images.parse_args()
         date = args.get('date')
-        status = args['status']
+        status = args.get('status')
+        if status is None:
+          status = 'completed'
         logger.info(status)
 
         args = page_data.parse_args()
