@@ -16,8 +16,8 @@
         />
       </div>
       <div style="position: absolute; top: 0; bottom: 0; right: 0; z-index: 100">
-        <VerifyButton :fontSize="'2.0rem'" :activeColor="'gray'" v-show="image.status && !image.status.verified && image.status.completed" />
-        <RejectButton :fontSize="'2.0rem'" :activeColor="'gray'" v-show="image.status && !image.status.rejected && image.status.completed" />
+        <VerifyButton :fontSize="'2.0rem'" :activeColor="'gray'" v-show="image.status && image.status.verified && image.status.completed" />
+        <RejectButton :fontSize="'2.0rem'" :activeColor="'gray'" v-show="image.status && image.status.rejected && image.status.completed" />
       </div>
 
       <b v-if="annotated" class="overlay-text text-center">
