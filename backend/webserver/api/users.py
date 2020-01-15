@@ -246,5 +246,8 @@ class UserImages(Resource):
         return {
             "pagination": pagination.export(),
             "page": page,
-            "images": images
+            "images": images,
+            "status": status,
+            "formatted_status": '{}__{}'.format('status' , status),
+            "date": date,
         }
