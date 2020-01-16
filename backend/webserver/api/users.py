@@ -228,7 +228,8 @@ class UserImages(Resource):
                       # status__rejected=True,
                       status__completedBy=user.id,
                       status__completedDate__gte=start,
-                      status__completedDate__lte=end
+                      status__completedDate__lte=end,
+                      **{'{}__{}'.format('status', status): True}
                     ).only(
                       'id', 'dataset_id', 'path', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status'
                     )
@@ -237,7 +238,7 @@ class UserImages(Resource):
                 annotated=True,
                 # status__completed=True, 
                 status__completedBy=user.id,
-                **{'{}__{}'.format('status' , status): True}
+                **{'{}__{}'.format('status', status): True}
               ).only(
                 'id', 'dataset_id', 'path', 'file_name', 'annotating', 'annotated', 'num_annotations', 'status'
               )
