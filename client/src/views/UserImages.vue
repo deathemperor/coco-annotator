@@ -59,7 +59,7 @@ export default {
       pages: 1,
       imageCount: 0,
       images: [],
-      status: ""
+      status: "completed"
     };
   },
   methods: {
