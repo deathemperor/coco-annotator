@@ -99,7 +99,7 @@ export default {
         || this.$store.getters['user/user'].username !== this.username)) {
       return;
     }
-    this.status = this.$route.query.status;
+    this.status = this.$route.query.status || "completed";
     this.updatePage();
   }
 };
