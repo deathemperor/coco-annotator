@@ -225,7 +225,7 @@ class UserImages(Resource):
             images = user.images.filter(
                       annotated=True,
                       # status__completed=True,
-                      status__rejected=True,
+                      # status__rejected=True,
                       status__completedBy=user.id,
                       status__completedDate__gte=start,
                       status__completedDate__lte=end
