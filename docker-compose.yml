@@ -8,7 +8,7 @@ networks:
   cocoannotator:
     external: false
 
-core_ifu-net:
+  core_ifu-net:
     external: true  
 
 services:
